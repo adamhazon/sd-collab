@@ -1,0 +1,9 @@
+.view {
+  padding: 24px;
+}
+
+.editorWrapper {
+  width: 500px;
+  min-height: 200px;
+  border: 1px solid #ccc;
+}
