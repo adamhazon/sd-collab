@@ -14,28 +14,15 @@ import * as collab from "prosemirror-collab";
 import './App.css';
 
 const IO_ENDPOINT = '/';
+const SOCKET = socketIOClient(IO_ENDPOINT);
 
 class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      authority: {
-        doc: schema.node("doc", null, [schema.node("paragraph", null, [
-          schema.text("This is a collaborative test document. Start editing to make it more interesting!")
-        ])]),
-        steps: [],
-        stepClientIDs: []
-      },
-    };
-  }
+  editorView = null;
 
-  componentDidMount() {
-    const { authority } = this.state;
-    const socket = socketIOClient(IO_ENDPOINT);
-
+  collabEditor(authority) {
     let view = new EditorView(document.querySelector("#editor"), {
       state: EditorState.create({
-        doc: authority.doc,
+        doc: schema.nodeFromJSON(authority.doc),
         plugins: [
           collab.collab({version: authority.steps.length}),
           history(),
@@ -48,7 +35,7 @@ class App extends Component {
         view.updateState(newState);
         let sendable = collab.sendableSteps(newState);
         if (sendable) {
-          socket.emit('FromClient', JSON.stringify({
+          SOCKET.emit('FromClient', JSON.stringify({
             version: sendable.version,
             steps: sendable.steps.map(step => step.toJSON()) || [],
             clientID: sendable.clientID
@@ -57,15 +44,24 @@ class App extends Component {
       }
     });
 
-    socket.on("FromServer", newData => {
-      this.setState({authority: newData.authority});
-      view.dispatch(
-        collab.receiveTransaction(
-          view.state,
-          newData.steps.map(step => Step.fromJSON(schema, step)),
-          newData.clientIDs
-        )
-      );
+    return view;
+  }
+
+  componentDidMount() {
+    SOCKET.on("FromServer", newData => {
+      const jsonData = JSON.parse(newData);
+
+      if (!this.editorView) {
+        this.editorView = this.collabEditor(jsonData.authority);
+      } else {
+        this.editorView.dispatch(
+          collab.receiveTransaction(
+            this.editorView.state,
+            jsonData.steps.map(step => Step.fromJSON(schema, step)),
+            jsonData.clientIDs
+          )
+        );
+      }
     });
   }
 

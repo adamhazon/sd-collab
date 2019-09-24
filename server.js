@@ -62,15 +62,15 @@ class Authority {
   }
 
   stepsSince(version) {
-    return {
+    return JSON.stringify({
       authority: {
-        doc: authority.doc,
-        steps: authority.steps,
+        doc: authority.doc.toJSON(),
+        steps: authority.steps.map(step => Step.fromJSON(schema, step)),
         stepClientIDs: authority.stepClientIDs
       },
       steps: this.steps.map(step => Step.fromJSON(schema, step)).slice(version),
       clientIDs: this.stepClientIDs.slice(version)
-    }
+    })
   }
 }
 
