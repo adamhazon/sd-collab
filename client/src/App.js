@@ -13,11 +13,12 @@ import * as collab from "prosemirror-collab";
 
 import './App.css';
 
+const IO_ENDPOINT = '/';
+
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      endpoint: "http://127.0.0.1:4000",
       authority: {
         doc: schema.node("doc", null, [schema.node("paragraph", null, [
           schema.text("This is a collaborative test document. Start editing to make it more interesting!")
@@ -29,8 +30,8 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const { endpoint, authority } = this.state;
-    const socket = socketIOClient(endpoint);
+    const { authority } = this.state;
+    const socket = socketIOClient(IO_ENDPOINT);
 
     let view = new EditorView(document.querySelector("#editor"), {
       state: EditorState.create({

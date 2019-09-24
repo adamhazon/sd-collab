@@ -1,19 +1,29 @@
 const mongoose = require('mongoose');
-const express = require("express");
+const express = require('express');
 const cors = require('cors');
-const http = require("http");
-const socketIo = require("socket.io");
+const http = require('http');
+const path = require('path');
+const socketIo = require('socket.io');
 const Data = require('./data');
 
-const {Step} = require("prosemirror-transform")
+//ProseMirror
+const {Step} = require('prosemirror-transform')
 const {schema} = require('prosemirror-schema-basic');
 
 const port = process.env.PORT || 4000;
-const index = require("./routes/index");
+const index = require('./routes/index');
 
 const app = express();
 
 app.use(cors());
+
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, 'client/build')))
+// Anything that doesn't match the above, send back index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + '/client/build/index.html'))
+})
+
 app.use(index);
 
 const server = http.createServer(app);
@@ -48,7 +58,7 @@ class Authority {
       this.stepClientIDs.push(clientID);
     });
 
-    io.emit("FromServer", this.stepsSince(version));
+    io.emit('FromServer', this.stepsSince(version));
   }
 
   stepsSince(version) {
@@ -64,20 +74,20 @@ class Authority {
   }
 }
 
-const doc = schema.node("doc", null, [schema.node("paragraph", null, [
-  schema.text("This is a collaborative test document. Start editing to make it more interesting!")
+const doc = schema.node('doc', null, [schema.node('paragraph', null, [
+  schema.text('This is a collaborative test document. Start editing to make it more interesting!')
 ])]);
 
 const authority = new Authority(doc);
 
-io.on("connection", socket => {
-  console.log("New client connected");
+io.on('connection', socket => {
+  console.log('New client connected');
 
-  socket.emit("FromServer", authority.stepsSince(0));
+  socket.emit('FromServer', authority.stepsSince(0));
 
-  socket.on("disconnect", () => console.log("Client disconnected"));
+  socket.on('disconnect', () => console.log('Client disconnected'));
 
-  socket.on("FromClient", (data) => {
+  socket.on('FromClient', (data) => {
     const jsonData = JSON.parse(data);
 
     authority.receiveSteps(jsonData.version, jsonData.steps, jsonData.clientID);
