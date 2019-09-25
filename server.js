@@ -11,7 +11,6 @@ const {Step} = require('prosemirror-transform')
 const {schema} = require('prosemirror-schema-basic');
 
 const port = process.env.PORT || 4000;
-const index = require('./routes/index');
 
 const app = express();
 
@@ -23,8 +22,6 @@ app.use(express.static(path.join(__dirname, 'client/build')))
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname + '/client/build/index.html'))
 })
-
-app.use(index);
 
 const server = http.createServer(app);
 
@@ -74,9 +71,35 @@ class Authority {
   }
 }
 
-const doc = schema.node('doc', null, [schema.node('paragraph', null, [
-  schema.text('This is a collaborative test document. Start editing to make it more interesting!')
-])]);
+const doc = schema.node('doc', null, [
+  schema.node('heading', { level: 1 }, [
+    schema.text('Heading 1')
+  ]),
+  schema.node('heading', { level: 2 }, [
+    schema.text('Heading 2')
+  ]),
+  schema.node('heading', { level: 3 }, [
+    schema.text('Heading 3')
+  ]),
+  schema.node('paragraph', null, [
+    schema.text('Paragraph')
+  ]),
+  schema.node('paragraph', null, [
+    schema.text('Bold', [
+      schema.mark('strong')
+    ])
+  ]),
+  schema.node('paragraph', null, [
+    schema.text('Italic', [
+      schema.mark('em')
+    ])
+  ]),
+  schema.node('blockquote', null, [
+    schema.node('paragraph', null, [
+      schema.text('Block')
+    ]),
+  ])
+]);
 
 const authority = new Authority(doc);
 
