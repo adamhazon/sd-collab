@@ -1,0 +1,10 @@
+.editorWrapper {
+  width: 100%;
+  max-width: 500px;
+  height: 100%;
+  max-height: 500px;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  overflow: auto;
+}
