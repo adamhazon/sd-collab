@@ -71,7 +71,7 @@ class Authority {
   }
 }
 
-const doc = schema.node('doc', null, [
+let initialDoc = schema.node('doc', null, [
   schema.node('heading', { level: 1 }, [
     schema.text('Heading 1')
   ]),
@@ -101,12 +101,32 @@ const doc = schema.node('doc', null, [
   ])
 ]);
 
-const authority = new Authority(doc);
+let authority = null;
+
+Data.findOne({ id: 1 }, (err, res) => {
+  if (res) {
+    initialDoc = schema.nodeFromJSON(JSON.parse(res.doc));
+  }
+  authority = new Authority(initialDoc);
+});
+
+setInterval(() => {
+  if (authority.doc == initialDoc) return;
+  initialDoc = authority.doc
+  console.log('Update database')
+  Data.updateOne(
+    { id: 1 },
+    { doc: JSON.stringify(authority.doc.toJSON()) },
+    { upsert: true, setDefaultsOnInsert: true },
+    (err, res) => {
+      if (err) console.log(err);
+    });
+}, 5000);
 
 io.on('connection', socket => {
   console.log('New client connected');
 
-  socket.emit('FromServer', authority.stepsSince(0));
+  if (authority) socket.emit('FromServer', authority.stepsSince(0));
 
   socket.on('disconnect', () => console.log('Client disconnected'));
 
