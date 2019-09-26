@@ -20,34 +20,3 @@ code {
 #root {
   height: 100%;
 }
-
-.ProseMirror {
-  outline: 0;
-}
-
-.ProseMirror p,
-.ProseMirror h1,
-.ProseMirror h2,
-.ProseMirror h3 {
-  margin: 0 0 12px;
-}
-
-.menubar {
-  padding-bottom: 8px;
-  margin-bottom: 8px;
-  border-bottom: 1px solid #ccc;
-}
-
-.menubar span {
-  display: inline-block;
-  font-size: 12px;
-  width: 16px;
-  height: 16px;
-  line-height: 16px;
-  text-align: center;
-  padding: 4px;
-  margin-right: 4px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  cursor: pointer;
-}

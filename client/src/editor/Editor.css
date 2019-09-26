@@ -1,4 +1,6 @@
 .editorWrapper {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: 500px;
   height: 100%;
@@ -7,4 +9,17 @@
   box-sizing: border-box;
   border: 1px solid #ccc;
   overflow: auto;
+}
+
+.ProseMirror {
+  flex: 1;
+  overflow: auto;
+  outline: 0;
+}
+
+.ProseMirror p,
+.ProseMirror h1,
+.ProseMirror h2,
+.ProseMirror h3 {
+  margin: 0 0 12px;
 }

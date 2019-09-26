@@ -14,9 +14,9 @@ import * as collab from "prosemirror-collab";
 
 import { menu } from "./Menu";
 
-import './Editor.css';
+import "./Editor.css";
 
-const IO_ENDPOINT = '/';
+const IO_ENDPOINT = "/";
 const SOCKET = socketIOClient(IO_ENDPOINT);
 
 class Editor extends Component {
@@ -39,7 +39,7 @@ class Editor extends Component {
         view.updateState(newState);
         let sendable = collab.sendableSteps(newState);
         if (sendable) {
-          SOCKET.emit('FromClient', JSON.stringify({
+          SOCKET.emit("FromClient", JSON.stringify({
             version: sendable.version,
             steps: sendable.steps.map(step => step.toJSON()) || [],
             clientID: sendable.clientID

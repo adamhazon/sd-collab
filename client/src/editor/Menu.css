@@ -1,0 +1,20 @@
+.menubar {
+  flex: 0 0 auto;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #ccc;
+}
+
+.menubar span {
+  display: inline-block;
+  font-size: 12px;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  text-align: center;
+  padding: 4px;
+  margin-right: 4px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}

@@ -6,6 +6,8 @@ import {
   wrapIn
 } from "prosemirror-commands";
 
+import "./Menu.css";
+
 export class MenuView {
   constructor(items, editorView) {
     this.items = items
